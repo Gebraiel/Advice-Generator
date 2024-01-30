@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
+    <script
+      src="https://kit.fontawesome.com/1a11e246e6.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Frontend Mentor | Advice generator app</title>
+  </head>
+  <body>
+    <main>
+      <div class="advice">
+        <p class="advice-id"></p>
+        <p class="advice-body"></p>
+      </div>
+      <button class="button-dice">
+        <img src="images/icon-dice.svg" alt="Dice Icon" />
+      </button>
+    </main>
+    <script>
+      let adviceContainer = document.querySelector(".advice");
+      let adviceBody = document.querySelector(".advice-body");
+      let adviceId = document.querySelector(".advice-id");
+      let button = document.querySelector("button.button-dice");
+      button.addEventListener("click", function () {
+        adviceContainer.classList.remove("fade-in");
+        adviceContainer.classList.add("fade-out");
+        setAdvice();
+      });
+      window.onload = function () {
+        setAdvice();
+      };
+
+      function setAdvice() {
+        let advicePromise = getAdvice();
+        advicePromise.then((adviceObject) => {
+          let advice = adviceObject.advice;
+          let id = adviceObject.id;
+          adviceBody.textContent = `"${advice}"`;
+          adviceId.textContent = `ADVICE #${id}`;
+          adviceContainer.classList.remove("fade-out");
+          adviceContainer.classList.add("fade-in");
+        });
+      }
+      async function getAdvice() {
+        let response = await fetch("https://api.adviceslip.com/advice");
+        let jsonObject = await response.json();
+        let slip = jsonObject["slip"];
+        let advice = slip["advice"];
+        let id = slip["id"];
+        return { advice, id };
+      }
+    </script>
+  </body>
+</html>
